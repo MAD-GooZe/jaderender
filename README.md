@@ -1,9 +1,8 @@
 jaderender
 =========
 
-Package jaderender is a template renderer that can be used with the Gin web
-framework https://github.com/gin-gonic/gin it uses the jaderender template library
-https://github.com/zdebeer99/gojade
+Package jaderender is a [Jade](http://jade-lang.com/) template renderer that can be used with the [Gin web framework](https://github.com/gin-gonic/gin).  
+It uses the [gojade](https://github.com/zdebeer99/gojade) template library.
 
 Usage
 -----
@@ -23,8 +22,7 @@ Basic Example
 ```go
 import (
     "github.com/gin-gonic/gin"
-    "github.com/flosch/pongo2"
-    "github.com/robvdl/pongo2gin"
+    "github.com/MAD-GooZe/jaderender"
 )
 
 func main() {
