@@ -1,70 +1,60 @@
-// Package pongo2gin is a template renderer that can be used with the Gin
-// web framework https://github.com/gin-gonic/gin it uses the Pongo2 template
-// library https://github.com/flosch/pongo2
-package pongo2gin
+// Package jaderender is a template renderer that can be used with the Gin
+// web framework https://github.com/gin-gonic/gin it uses the gojade template
+// library https://github.com/zdebeer99/gojade
+
+package jaderender
 
 import (
 	"net/http"
-	"path"
-
-	"github.com/flosch/pongo2"
-	"github.com/gin-gonic/gin"
+	"github.com/zdebeer99/gojade"
 	"github.com/gin-gonic/gin/render"
 )
 
 // RenderOptions is used to configure the renderer.
 type RenderOptions struct {
 	TemplateDir string
-	ContentType string
+	Beautify    bool
 }
 
-// Pongo2Render is a custom Gin template renderer using Pongo2.
-type Pongo2Render struct {
-	Options  *RenderOptions
-	Template *pongo2.Template
-	Context  pongo2.Context
+
+// JadeRender is a custom Gin template renderer using gojade.
+type JadeRender struct {
+	Template     *gojade.Engine
+	Context      interface{}
+	TemplateName string
 }
 
-// New creates a new Pongo2Render instance with custom Options.
-func New(options RenderOptions) *Pongo2Render {
-	return &Pongo2Render{
-		Options: &options,
+// New creates a new JadeRender instance with custom Options.
+func New(options RenderOptions) *JadeRender {
+	this := &JadeRender{
+		Template: gojade.New(),
 	}
+	this.Template.ViewPath = options.TemplateDir
+	this.Template.Beautify = options.Beautify
+	return this
 }
 
-// Default creates a Pongo2Render instance with default options.
-func Default() *Pongo2Render {
+// Default creates a JadeRender instance with default options.
+func Default() *JadeRender {
 	return New(RenderOptions{
-		TemplateDir: "templates",
-		ContentType: "text/html; charset=utf-8",
+		TemplateDir: "views",
+		Beautify: false,
 	})
 }
 
-// Instance should return a new Pongo2Render struct per request and prepare
-// the template by either loading it from disk or using pongo2's cache.
-func (p Pongo2Render) Instance(name string, data interface{}) render.Render {
-	var template *pongo2.Template
-	filename := path.Join(p.Options.TemplateDir, name)
-
-	// always read template files from disk if in debug mode, use cache otherwise.
-	if gin.Mode() == "debug" {
-		template = pongo2.Must(pongo2.FromFile(filename))
-	} else {
-		template = pongo2.Must(pongo2.FromCache(filename))
-	}
-
-	return Pongo2Render{
-		Template: template,
-		Context:  data.(pongo2.Context),
-		Options:  p.Options,
+// Instance should return a new JadeRender struct per request
+func (this JadeRender) Instance(templateName string, data interface{}) render.Render {
+	return JadeRender{
+		Template: this.Template,
+		Context:  data,
+		TemplateName: templateName,
 	}
 }
 
 // Render should render the template to the response.
-func (p Pongo2Render) Render(w http.ResponseWriter) error {
-	writeContentType(w, []string{p.Options.ContentType})
-	err := p.Template.ExecuteWriter(p.Context, w)
-	return err
+func (this JadeRender) Render(w http.ResponseWriter) error {
+	writeContentType(w, []string{"text/html; charset=utf-8"})
+	return this.Template.RenderFileW(w, this.TemplateName, this.Context)
 }
 
 // writeContentType is also in the gin/render package but it has not been made
