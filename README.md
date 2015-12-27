@@ -16,6 +16,9 @@ directory, or you can use jaderender.New() to specify a custom location.
 To render templates from a route, call c.HTML just as you would with
 regular Gin templates.
 
+This jaderender implementation also came with build-in LRU cache of adjustable size
+which stores rendered HTML for pages based on their template name and rendering context.
+
 Basic Example
 -------------
 
@@ -50,5 +53,6 @@ custom RenderOptions:
 type RenderOptions struct {
     TemplateDir string  // location of the template directory
     Beautify    bool // beautify the resulting HTML
+    CacheSize   int // LRU cache maximum size (in pages); zero values turns off caching
 }
 ```
