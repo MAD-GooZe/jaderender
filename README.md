@@ -12,6 +12,7 @@ instance, this is done after creating the Gin router when the Gin application
 starts up. You can use jaderender.Default() to create a new renderer with
 default options, this assumes templates will be located in the "views"
 directory, or you can use jaderender.New() to specify a custom location.
+This jaderender implementation also comes with build-in LRU cache of adjustable size.
 
 To render templates from a route, call c.HTML just as you would with
 regular Gin templates.
@@ -48,7 +49,8 @@ custom RenderOptions:
 
 ```go
 type RenderOptions struct {
-    TemplateDir string  // location of the template directory
-    Beautify    bool // beautify the resulting HTML
+    TemplateDir string  // location of the template directory; default "views"
+    Beautify    bool    // beautify the resulting HTML; default false
+    CacheSize   int     // LRU cache maximum size (in pages); zero value turns off caching; default: 128
 }
 ```
