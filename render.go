@@ -6,7 +6,7 @@ package jaderender
 
 import (
 	"net/http"
-	"github.com/zdebeer99/gojade"
+	"github.com/Lnd-stoL/gojade"
 	"github.com/gin-gonic/gin/render"
 )
 
