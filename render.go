@@ -85,7 +85,7 @@ func (this JadeRender) Render(w http.ResponseWriter) error {
 
 // writeContentType is also in the gin/render package but it has not been made
 // pubic so is repeated here, maybe convince the author to make this public.
-func writeContentType(w http.ResponseWriter, value []string) {
+func (this JadeRender) WriteContentType(w http.ResponseWriter, value []string) {
 	header := w.Header()
 	if val := header["Content-Type"]; len(val) == 0 {
 		header["Content-Type"] = value
