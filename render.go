@@ -65,7 +65,7 @@ func (this *JadeRender) Instance(templateName string, data interface{}) render.R
 
 // Render should render the template to the response.
 func (this JadeRender) Render(w http.ResponseWriter) error {
-	this.WriteContentType(w, []string{"text/html; charset=utf-8"})
+	writeContentType(w, []string{"text/html; charset=utf-8"})
 
 	// the cache is disabled in JadeRender options
 	if this.cache == nil {
@@ -83,9 +83,17 @@ func (this JadeRender) Render(w http.ResponseWriter) error {
 	return nil
 }
 
+// needed to implement render.Render; not sure if this is right
+func (this JadeRender) WriteContentType(w http.ResponseWriter) {
+	header := w.Header()
+	if val := header["Content-Type"]; len(val) == 0 {
+		header["Content-Type"] = []string{"text/html; charset=utf-8"}
+	}
+}
+
 // writeContentType is also in the gin/render package but it has not been made
 // pubic so is repeated here, maybe convince the author to make this public.
-func (this JadeRender) WriteContentType(w http.ResponseWriter, value []string) {
+func writeContentType(w http.ResponseWriter, value []string) {
 	header := w.Header()
 	if val := header["Content-Type"]; len(val) == 0 {
 		header["Content-Type"] = value
