@@ -65,7 +65,7 @@ func (this *JadeRender) Instance(templateName string, data interface{}) render.R
 
 // Render should render the template to the response.
 func (this JadeRender) Render(w http.ResponseWriter) error {
-	writeContentType(w, []string{"text/html; charset=utf-8"})
+	this.WriteContentType(w, []string{"text/html; charset=utf-8"})
 
 	// the cache is disabled in JadeRender options
 	if this.cache == nil {
